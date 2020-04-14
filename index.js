@@ -1,25 +1,35 @@
-const axios = require("axios");
-const cheerio = require("cheerio");
+const puppeteer = require("puppeteer");
 
 const GOLPE_URL = "https://www.golpeofficial.com/product-page/jaqueta";
 
-async function fetchData(url) {
-  const response = await axios.get(url).catch((err) => console.error(err));
+(async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
 
-  if (response.status !== 200) {
-    console.log("An error ocurred while fetch this page.");
-    return;
+  await page.goto(GOLPE_URL);
+
+  // Combobox
+  await page.waitFor(".Popover4009822983--popoverElement");
+
+  while (!(await page.$(".DropdownContent3963406277--optionsContainer"))) {
+    await page.click(".Popover4009822983--popoverElement");
   }
 
-  return response.data;
-}
+  // Select option
+  const items = await page.$$(
+    ".DropdownContent3963406277--optionsContainer > div"
+  );
 
-(async () => {
-  const data = await fetchData(GOLPE_URL);
+  const properties = await Promise.all(
+    items.map((item) =>
+      item.evaluate((obj) => ({
+        name: obj.getAttribute("title"),
+        disabled: obj.getAttribute("data-dropdownoption3579514325-disabled"),
+      }))
+    )
+  );
 
-  const $ = cheerio.load(data);
+  console.log(properties);
 
-  $(
-    ".Popover4009822983--root.Dropdown1020571488--root.OptionsDropdown3447037927--dropdown"
-  ).click();
+  await browser.close();
 })();
