@@ -14,4 +14,4 @@ My initial intent was to set up the [emailJS](https://github.com/eleith/emailjs)
 
 ## P.S.
 
-[Puppeteer](https://github.com/puppeteer/puppeteer) is an AWEOME tool and I'll still learning it!
+[Puppeteer](https://github.com/puppeteer/puppeteer) is an AWEOME tool!!
